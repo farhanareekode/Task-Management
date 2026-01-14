@@ -1,0 +1,218 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+<style>
+/* ===== PAGE LAYOUT ===== */
+.tasks-wrapper {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+}
+
+/* ===== CARD ===== */
+.card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* ===== FORM CONTROLS ===== */
+label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: none;
+    height: 64px;
+}
+
+.btn {
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-primary { background: #2563eb; color: #fff; }
+.btn-primary:hover { background: #1d4ed8; }
+
+.btn-delete { background: #dc2626; color: #fff; }
+.btn-report { background: #16a34a; color: #fff; }
+
+/* ===== TASK LIST ===== */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task-row {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 14px;
+}
+
+/* STRICT GRID — NO AUTO */
+.task-grid {
+    display: grid;
+    grid-template-columns:
+        220px    /* title */
+        300px    /* description */
+        160px    /* assignee */
+        140px    /* status */
+        110px;   /* actions */
+    gap: 12px;
+    align-items: start;
+}
+
+/* Prevent inputs from resizing rows */
+.task-grid > div {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Actions */
+.task-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 18px;
+}
+
+/* Status coloring */
+.status-pending { color: #ca8a04; font-weight: 600; }
+.status-in-progress { color: #2563eb; font-weight: 600; }
+.status-completed { color: #16a34a; font-weight: 600; }
+</style>
+
+<div class="tasks-wrapper">
+
+    <!-- CREATE TASK -->
+    <div class="card">
+        <h3>Create Task</h3>
+
+        {% if error %}
+            <div class="error-box">{{ error }}</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_task">
+
+            <label>Title</label>
+            <input type="text" name="title" required>
+
+            <label>Description</label>
+            <textarea name="description" required></textarea>
+
+            <label>Assign To</label>
+            <select name="assigned_to" required>
+                <option value="">-- Select User --</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Status</label>
+            <select name="status">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+            </select>
+
+            <br>
+            <button class="btn btn-primary">Create Task</button>
+        </form>
+    </div>
+
+    <!-- TASK LIST -->
+    <div class="task-list">
+
+        {% for task in tasks %}
+        <form method="post" class="task-row">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_task">
+            <input type="hidden" name="task_id" value="{{ task.id }}">
+
+            <div class="task-grid">
+
+                <div>
+                    <label>Title</label>
+                    <input type="text" name="title" value="{{ task.title }}" required>
+                </div>
+
+                <div>
+                    <label>Description</label>
+                    <textarea name="description">{{ task.description }}</textarea>
+                </div>
+
+                <div>
+                    <label>Assigned To</label>
+                    <select name="assigned_to">
+                        {% for user in users %}
+                            <option value="{{ user.id }}"
+                                {% if task.assigned_to_id == user.id %}selected{% endif %}>
+                                {{ user.username }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label>Status</label>
+                    <select name="status"
+                        class="status-{{ task.status|slugify }}">
+                        <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
+                        <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                        <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+                    </select>
+                </div>
+
+                <div class="task-actions">
+                    <button class="btn btn-primary">Save</button>
+
+                    <a class="btn btn-delete"
+                       href="{% url 'admin_panel:task-delete' task.id %}">
+                        Delete
+                    </a>
+
+                    {% if task.status == "Completed" %}
+                    <a class="btn btn-report"
+                       href="{% url 'admin_panel:task-report' task.id %}">
+                        Report
+                    </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </form>
+        {% empty %}
+            <div class="card">No tasks found.</div>
+        {% endfor %}
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}SuperAdmin{% endblock %}</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f6f9;
+        }
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            background: #1e293b;
+            color: #fff;
+            padding-top: 20px;
+        }
+        .sidebar h2 {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .sidebar a:hover {
+            background: #334155;
+            color: #fff;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 25px;
+        }
+        .topbar {
+            background: #fff;
+            padding: 12px 20px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+        table th {
+            background: #f1f5f9;
+            text-align: left;
+        }
+        .btn {
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 4px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+        .sidebar form {
+    padding: 12px 20px;
+        }
+
+        .sidebar button {
+            width: 100%;
+            background: #dc2626;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .sidebar button:hover {
+            background: #b91c1c;
+        }
+
+        .btn-danger { background: #dc2626; color: #fff; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-secondary { background: #475569; color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>SuperAdmin</h2>
+    <a href="{% url 'admin_panel:dashboard' %}">Dashboard</a>
+    <a href="{% url 'admin_panel:users' %}">Users</a>
+    <a href="{% url 'admin_panel:admins' %}">Admins</a>
+    <a href="{% url 'admin_panel:tasks' %}">All Tasks</a>
+    <a href="{% url 'admin_panel:reports' %}">Task Reports</a>
+    <form method="post" action="{% url 'accounts:logout' %}" style="margin-top:30px;">
+    {% csrf_token %}
+    <button type="submit" class="btn-sm btn-delete">
+        Logout
+    </button>
+</form>
+
+</div>
+
+<div class="content">
+    <div class="topbar">
+        Logged in as <strong>{{ request.user.username }}</strong>
+    </div>
+
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+{% extends "admin_panel/user_base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- ===== STATS CARDS ===== -->
+<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:24px; margin-bottom:40px;">
+
+    <div class="card">
+        <h4>Total Tasks</h4>
+        <p style="font-size:32px; font-weight:600;">{{ total_count }}</p>
+    </div>
+
+    <div class="card">
+        <h4>Pending</h4>
+        <p style="font-size:32px; font-weight:600; color:#dc2626;">
+            {{ pending_count }}
+        </p>
+    </div>
+
+    <div class="card">
+        <h4>Completed</h4>
+        <p style="font-size:32px; font-weight:600; color:#16a34a;">
+            {{ completed_count }}
+        </p>
+    </div>
+
+</div>
+
+<!-- ===== RECENT PENDING TASKS ===== -->
+<div class="card">
+    <h3>Pending Tasks</h3>
+
+    {% for task in pending_tasks %}
+        <div style="padding:10px 0; border-bottom:1px solid #e5e7eb;">
+            <strong>{{ task.title }}</strong><br>
+            <small>Created: {{ task.created_at|date:"d M Y" }}</small>
+        </div>
+    {% empty %}
+        <p>No pending tasks 🎉</p>
+    {% endfor %}
+</div>
+
+<!-- ===== RECENT COMPLETED TASKS ===== -->
+<div class="card">
+    <h3>Completed Tasks</h3>
+
+    {% for task in completed_tasks %}
+        <div style="padding:10px 0; border-bottom:1px solid #e5e7eb;">
+            <strong>{{ task.title }}</strong><br>
+            <small>Completed</small>
+        </div>
+    {% empty %}
+        <p>No completed tasks yet.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SuperAdmin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f1f5f9;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            background: #0f172a;
+            color: #fff;
+            padding-top: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+            color: #e5e7eb;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #cbd5f5;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover {
+            background: #1e293b;
+            color: #fff;
+        }
+
+        /* Main Content */
+        .main {
+            margin-left: 240px;
+            padding: 25px;
+        }
+
+        .topbar {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .topbar span {
+            color: #475569;
+            font-size: 14px;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #475569;
+        }
+
+        .card p {
+            font-size: 28px;
+            margin: 10px 0 0;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        /* Section */
+        .section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .section h3 {
+            margin-top: 0;
+            color: #0f172a;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #2563eb;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 10px;
+        }
+
+        .btn.secondary {
+            background: #475569;
+        }
+        .sidebar form {
+    padding: 12px 20px;
+}
+
+.sidebar button {
+    width: 100%;
+    background: #dc2626;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sidebar button:hover {
+    background: #b91c1c;
+}
+
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>SuperAdmin</h2>
+
+    <a href="{% url 'admin_panel:dashboard' %}">Dashboard</a>
+    <a href="{% url 'admin_panel:users' %}">Manage Users</a>
+    <a href="{% url 'admin_panel:admins' %}">Manage Admins</a>
+    <a href="{% url 'admin_panel:tasks' %}">All Tasks</a>
+    <a href="{% url 'admin_panel:reports' %}">Task Reports</a>
+
+    <form method="post" action="{% url 'accounts:logout' %}" style="margin-top:30px;">
+    {% csrf_token %}
+    <button type="submit" class="btn-sm btn-delete">
+        Logout
+    </button>
+</form></div>
+
+<!-- Main -->
+<div class="main">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <span>Welcome, <strong>{{ request.user.username }}</strong> (SuperAdmin)</span>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="cards">
+        <div class="card">
+            <h3>Total Users</h3>
+            <p>{{ users_count }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Admins</h3>
+            <p>{{ admins_count }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Tasks</h3>
+            <p>{{ tasks_count }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Completed Tasks</h3>
+            <p>{{ completed_tasks }}</p>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section">
+        <h3>Quick Actions</h3>
+        <br>
+
+        <a class="btn" href="{% url 'admin_panel:user-create' %}">
+            + Create User
+        </a>
+
+        <a class="btn secondary" href="{% url 'admin_panel:users' %}">
+            View Users
+        </a>
+
+        <a class="btn secondary" href="{% url 'admin_panel:tasks' %}">
+            View Tasks
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

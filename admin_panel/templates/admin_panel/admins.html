@@ -1,0 +1,63 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Manage Admins{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>Admins</h3>
+
+    <a class="btn btn-primary" href="{% url 'admin_panel:admin-create' %}">
+        + Create Admin
+    </a>
+
+    <br><br>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Managed Users</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for admin in admins %}
+        <tr>
+            <td>{{ admin.username }}</td>
+            <td>{{ admin.email|default:"—" }}</td>
+
+            <td>
+                {{ admin.managed_users.count }}
+            </td>
+
+            <td>
+                <a class="btn btn-secondary"
+                   href="{% url 'admin_panel:admin-update' admin.id %}">
+                    Edit
+                </a>
+
+                <a class="btn btn-danger"
+                   href="{% url 'admin_panel:admin-delete' admin.id %}"
+                   onclick="return confirm('Delete this admin? All assigned users will become unassigned.');">
+                    Delete
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" style="text-align:center;">
+                No admins found.
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a class="btn btn-secondary"
+       href="{% url 'admin_panel:dashboard' %}">
+        Back to Dashboard
+    </a>
+</div>
+{% endblock %}

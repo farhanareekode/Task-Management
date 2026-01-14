@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}User Panel{% endblock %}</title>
+
+    <style>
+body {
+    margin: 0;
+    background: #ffffff;
+}
+
+        /* ===== LAYOUT ===== */
+        .layout {
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            background: #ffffff;
+        }
+
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            background: linear-gradient(180deg, #1f2937, #111827);
+            color: #e5e7eb;
+            padding: 28px 22px;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 36px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+
+        /* ===== CONTENT ===== */
+        .content {
+            background: #f9fafb;
+            padding: 40px;
+        }
+
+        .page-title {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+
+        .btn {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .error {
+            color: #dc2626;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            margin-top: 6px;
+        }
+
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2>User Panel</h2>
+
+        <a class="nav-link" href="{% url 'admin_panel:dashboard' %}">Dashboard</a>
+        <a class="nav-link" href="{% url 'admin_panel:user_task' %}">My Tasks</a>
+
+        <form method="post" action="{% url 'accounts:logout' %}" style="margin-top:40px;">
+            {% csrf_token %}
+            <button class="btn" type="submit">Logout</button>
+        </form>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+        <div class="page-title">{% block page_title %}{% endblock %}</div>
+        {% block content %}{% endblock %}
+    </main>
+
+</div>
+
+</body>
+</html>

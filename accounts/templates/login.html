@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Task Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            width: 360px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-card h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .login-card input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 10px;
+            background: #667eea;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .login-card button:hover {
+            background: #5a67d8;
+        }
+
+        .error {
+            background: #ffe5e5;
+            color: #cc0000;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <h2>Task Management</h2>
+
+    {% if form.errors %}
+        <div class="error">
+            Invalid username or password
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.username }}
+        {{ form.password }}
+
+        <button type="submit">Login</button>
+    </form>
+
+    <div class="footer-text">
+        © 2026 Task Management System
+    </div>
+</div>
+
+</body>
+</html>

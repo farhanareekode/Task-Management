@@ -1,0 +1,218 @@
+{% extends "admin_panel/base_admin.html" %}
+{% block title %}My Users Tasks{% endblock %}
+
+{% block content %}
+
+<style>
+/* ===== PAGE HEADER ===== */
+.topbar {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+/* ===== CARD ===== */
+.card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+}
+
+/* ===== FORM ELEMENTS ===== */
+label {
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+    margin-top: 14px;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+/* ===== USER SECTION ===== */
+.user-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* ===== TASK ITEM ===== */
+.task-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f9fafb;
+    cursor: pointer;
+}
+
+.task-title {
+    font-weight: 600;
+}
+
+/* ===== STATUS BADGES ===== */
+.status {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status.in-progress {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.status.completed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+/* ===== TASK BODY ===== */
+.task-body {
+    padding: 16px;
+    background: #ffffff;
+}
+
+/* ===== COMPLETED INFO ===== */
+.completed-box {
+    margin-top: 16px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 6px;
+    border: 1px dashed #cbd5f5;
+}
+
+/* ===== EMPTY TEXT ===== */
+.empty-text {
+    color: #6b7280;
+    font-size: 14px;
+}
+</style>
+
+<div class="topbar">My Users’ Tasks</div>
+
+<!-- ================= CREATE TASK ================= -->
+<div class="card">
+    <h3>Create Task</h3>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create">
+
+        <label>Title</label>
+        <input type="text" name="title" required>
+
+        <label>Description</label>
+        <textarea name="description" rows="3" required></textarea>
+
+        <label>Assign To</label>
+        <select name="assigned_to" required>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+
+        <button class="btn-primary">Create Task</button>
+    </form>
+</div>
+
+<!-- ================= USERS + TASKS ================= -->
+{% for user in users %}
+<div class="card">
+
+    <div class="user-title">{{ user.username }}</div>
+
+    {% if user.tasks.exists %}
+        {% for task in user.tasks.all %}
+        <details class="task-item">
+            <summary class="task-header">
+                <span class="task-title">{{ task.title }}</span>
+                <span class="status {{ task.status|lower|slugify }}">
+                    {{ task.status }}
+                </span>
+            </summary>
+
+            <div class="task-body">
+
+                <p><strong>Description</strong><br>{{ task.description }}</p>
+
+                <!-- UPDATE STATUS -->
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_status">
+                    <input type="hidden" name="task_id" value="{{ task.id }}">
+
+                    <label>Status</label>
+                    <select name="status">
+                        {% for key,label in task.STATUS_CHOICES %}
+                        <option value="{{ key }}" {% if task.status == key %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <button class="btn-primary">Update Status</button>
+                </form>
+
+                {% if task.status == "Completed" %}
+                <div class="completed-box">
+                    <p><strong>Completion Report</strong></p>
+                    <p>{{ task.completion_report|default:"No report submitted" }}</p>
+
+                    <p><strong>Worked Hours:</strong></p>
+                    <p>{{ task.worked_hours|default:"—" }}</p>
+                </div>
+                {% endif %}
+
+            </div>
+        </details>
+        {% endfor %}
+    {% else %}
+        <p class="empty-text">No tasks assigned.</p>
+    {% endif %}
+
+</div>
+{% endfor %}
+
+{% endblock %}

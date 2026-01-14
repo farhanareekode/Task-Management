@@ -1,0 +1,20 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Task Report{% endblock %}
+
+{% block content %}
+
+<h2>Task Completion Report</h2>
+
+<div class="card">
+    <p><strong>Task:</strong> {{ task.title }}</p>
+    <p><strong>Assigned To:</strong> {{ task.assigned_to.username }}</p>
+    <p><strong>Status:</strong> {{ task.status|title }}</p>
+    <p><strong>Worked Hours:</strong> {{ task.worked_hours }}</p>
+
+    <hr>
+
+    <h4>Completion Report</h4>
+    <p>{{ task.completion_report }}</p>
+</div>
+
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Update {{ role|title }}{% endblock %}
+
+{% block content %}
+<div style="
+    min-height:calc(100vh - 80px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+">
+    <div style="
+        width:100%;
+        max-width:480px;
+        background:#ffffff;
+        padding:28px;
+        border-radius:10px;
+        box-shadow:0 12px 30px rgba(0,0,0,0.08);
+    ">
+        <h3 style="
+            text-align:center;
+            margin-bottom:22px;
+            font-size:20px;
+            font-weight:600;
+            color:#111827;
+        ">
+            Update {{ role|title }}
+        </h3>
+
+        {% if error %}
+        <div style="
+            background:#fee2e2;
+            color:#b91c1c;
+            padding:10px 12px;
+            border-radius:6px;
+            font-size:14px;
+            margin-bottom:16px;
+        ">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div style="margin-bottom:16px;">
+                <label style="
+                    display:block;
+                    margin-bottom:6px;
+                    font-size:14px;
+                    font-weight:500;
+                    color:#374151;
+                ">Username</label>
+                <input type="text" name="username"
+                       value="{{ user_obj.username }}"
+                       required
+                       style="
+                           width:100%;
+                           padding:10px 12px;
+                           font-size:14px;
+                           border-radius:6px;
+                           border:1px solid #d1d5db;
+                           outline:none;
+                       ">
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label style="
+                    display:block;
+                    margin-bottom:6px;
+                    font-size:14px;
+                    font-weight:500;
+                    color:#374151;
+                ">Email</label>
+                <input type="email" name="email"
+                       value="{{ user_obj.email }}"
+                       style="
+                           width:100%;
+                           padding:10px 12px;
+                           font-size:14px;
+                           border-radius:6px;
+                           border:1px solid #d1d5db;
+                           outline:none;
+                       ">
+            </div>
+
+            {% if role == "user" %}
+            <div style="margin-bottom:18px;">
+                <label style="
+                    display:block;
+                    margin-bottom:6px;
+                    font-size:14px;
+                    font-weight:500;
+                    color:#374151;
+                ">Assign Admin</label>
+                <select name="admin" required
+                        style="
+                            width:100%;
+                            padding:10px 12px;
+                            font-size:14px;
+                            border-radius:6px;
+                            border:1px solid #d1d5db;
+                            background:#ffffff;
+                        ">
+                    <option value="">-- Select Admin --</option>
+                    {% for admin in admins %}
+                    <option value="{{ admin.id }}"
+                        {% if assigned_admin == admin.id %}selected{% endif %}>
+                        {{ admin.username }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+
+            <button type="submit"
+                    style="
+                        width:100%;
+                        padding:12px;
+                        font-size:15px;
+                        font-weight:600;
+                        border-radius:6px;
+                        border:none;
+                        background:#2563eb;
+                        color:#ffffff;
+                        cursor:pointer;
+                    ">
+                Update {{ role|title }}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

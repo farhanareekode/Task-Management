@@ -1,0 +1,30 @@
+{% extends "admin_panel/base_admin.html" %}
+{% block title %}Task Reports{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>Task Completion Reports</h3>
+
+    <table>
+        <tr>
+            <th>Task</th>
+            <th>User</th>
+            <th>Worked Hours</th>
+            <th>Report</th>
+        </tr>
+
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.assigned_to.username }}</td>
+            <td>{{ task.worked_hours }}</td>
+            <td>{{ task.completion_report }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No completed tasks.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

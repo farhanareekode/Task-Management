@@ -1,0 +1,63 @@
+{% extends "admin_panel/user_base.html" %}
+{% block title %}My Tasks{% endblock %}
+{% block page_title %}My Tasks{% endblock %}
+
+{% block content %}
+
+{% if error %}
+    <div class="error">{{ error }}</div>
+{% endif %}
+
+{% for task in tasks %}
+<div class="card">
+
+    <h3>{{ task.title }}</h3>
+
+    <p>
+        Status:
+        <strong>{{ task.status }}</strong>
+    </p>
+
+    <!-- ===== STATUS UPDATE FORM ===== -->
+    {% if task.status != "Completed" %}
+    <form method="post" style="margin-bottom:16px;">
+        {% csrf_token %}
+        <input type="hidden" name="task_id" value="{{ task.id }}">
+
+        <label>Update Status</label>
+        <select name="status" required>
+            <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>
+                Pending
+            </option>
+            <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>
+                In Progress
+            </option>
+            <option value="Completed">
+                Completed
+            </option>
+        </select>
+
+        <!-- Completion fields appear only when completing -->
+        <div class="completion-fields" style="margin-top:12px;">
+            <label>Completion Report (required if completed)</label>
+            <textarea name="completion_report"></textarea>
+
+            <label>Worked Hours</label>
+            <input type="number" name="worked_hours" step="0.1" min="0">
+        </div>
+
+        <button class="btn" type="submit">
+            Update Task
+        </button>
+    </form>
+    {% else %}
+        <p><strong>Completion Report:</strong><br>{{ task.completion_report }}</p>
+        <p><strong>Worked Hours:</strong> {{ task.worked_hours }}</p>
+    {% endif %}
+
+</div>
+{% empty %}
+<p>No tasks assigned.</p>
+{% endfor %}
+
+{% endblock %}
