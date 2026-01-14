@@ -5,7 +5,7 @@
 
 <p align="left"><b>1. Clone the repository</b></p>
 <pre>
-git clone https://github.com/your-username/Task-Management.git
+git clone https://github.com/farhanareekode/Task-Management
 cd Task-Management
 </pre>
 
